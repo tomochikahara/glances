@@ -95,12 +95,17 @@ class GlancesClient(object):
 
         - 'glances' = Glances server (default)
         - 'snmp' = SNMP (fallback)
+        - 'silent' = Silent mode
         """
         self._client_mode = mode
 
     def login(self):
         """Logon to the server."""
         ret = True
+
+        if self.args.silent:
+            self.client_mode = 'silent'
+            return ret
 
         if not self.args.snmp_force:
             # First of all, trying to connect to a Glances server
@@ -219,14 +224,18 @@ class GlancesClient(object):
 
         exitkey = False
 
-        while True and not exitkey:
-            # Update the stats
-            cs_status = self.update()
+        silent = self.client_mode == 'silent':
 
-            # Update the screen
-            exitkey = self.screen.update(self.stats,
-                                         cs_status=cs_status,
-                                         return_to_browser=self.return_to_browser)
+        while True and not exitkey:
+
+            if not silent:
+                # Update the stats
+                cs_status = self.update()
+
+                # Update the screen
+                exitkey = self.screen.update(self.stats,
+                                             cs_status=cs_status,
+                                             return_to_browser=self.return_to_browser)
 
             # Export stats using export modules
             self.stats.export(self.stats)

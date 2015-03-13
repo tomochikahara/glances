@@ -168,6 +168,8 @@ Start the client browser (browser mode):\n\
                             help=_('SNMP authentication key (only for SNMPv3)'))
         parser.add_argument('--snmp-force', action='store_true', default=False,
                             dest='snmp_force', help=_('force SNMP mode'))
+        parser.add_argument('--silent', action='store_true', default=False,
+                            dest='silent', help=_('silent mode'))
         parser.add_argument('-t', '--time', default=self.refresh_time, type=float,
                             dest='time', help=_('set refresh time in seconds [default: {0} sec]').format(self.refresh_time))
         parser.add_argument('-w', '--webserver', action='store_true', default=False,

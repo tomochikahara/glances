@@ -61,8 +61,12 @@ class GlancesStandalone(object):
         # Initial system informations update
         self.stats.update()
 
-        # Init screen
-        self.screen = GlancesCursesStandalone(args=args)
+        if args.silent:
+            self.silent_mode = True
+        else:
+            self.silent_mode = False
+            # Init screen
+            self.screen = GlancesCursesStandalone(args=args)
 
     def serve_forever(self):
         """Main loop for the CLI."""
@@ -70,15 +74,17 @@ class GlancesStandalone(object):
             # Update system informations
             self.stats.update()
 
-            # Update the screen
-            self.screen.update(self.stats)
+            if not self.silent_mode:
+                # Update the screen
+                self.screen.update(self.stats)
 
             # Export stats using export modules
             self.stats.export(self.stats)
 
     def end(self):
         """End of the standalone CLI."""
-        self.screen.end()
+        if not self.silent_mode:
+            self.screen.end()
 
         # Exit from export modules
         self.stats.end()
